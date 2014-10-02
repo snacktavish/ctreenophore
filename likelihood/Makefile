@@ -1,7 +1,7 @@
 CC = gcc
-include_dir = /home/localuser/Library/phylogenetic-likelihood-library/src
+include_dir = /home/ejmctavish/projects/libpll-1.0.0/src
 CFLAGS = -Wall -O2 -fomit-frame-pointer
-ARCH = SSE3
+ARCH = sse3
 
 all: likelihood
 

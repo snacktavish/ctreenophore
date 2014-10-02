@@ -12,7 +12,7 @@ int main (int argc, char * argv[])
   attr.fastScaling  = PLL_FALSE;
   attr.saveMemory   = PLL_FALSE;
   attr.useRecom     = PLL_FALSE;
-  /*attr.randomNumber = 0x12345;*/
+  attr.randomNumberSeed = 0x12345;
   inst = pllCreateInstance (&attr);      /* Create the PLL instance */
  
  

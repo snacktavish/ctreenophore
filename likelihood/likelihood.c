@@ -132,7 +132,7 @@ int main (int argc, char * argv[])
 
   /* Evaluate again the likelihood */
 
-  pllEvaluateLikelihood (tr, partitions, tr->start, PLL_TRUE, PLL_FALSE);
+  pllEvaluateGeneric (tr, partitions, tr->start, PLL_TRUE, PLL_FALSE);
 
   printf ("+-------------------------------------------------------+\n");
   printf ("  log-likelihood..: %f\n", tr->likelihood);

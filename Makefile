@@ -7,10 +7,22 @@ PLL_HOME ?= /usr/local
 
 # CPPFLAGS are arguments to the C preprocessor - typically -D for defines
 #    and -I for includes.
-CPPFLAGS = -I${PLL_HOME}/include
+# The := appends, which is nice if you want to be able to tweak CFLAGS
+#    in your environment without touching the Makefile
+CPPFLAGS := -I${PLL_HOME}/include
+
+# CFLAGS are flags to the C compiler. The distinction between the preprocessor
+#  and the compiler often does not matter. But it is possible to just 
+#  preprocess with gcc -E
+#  my rule of thumb is that if it won't affect the results of that
+#  invocation then it belongs in CFLAGS not CPPFLAGS.
+#  -g adds "symbols" to your executable, which makes it easier to debug.
+CFLAGS := -g
+
 # LDFLAGS are flags to the linker... -L (capital matters!) is the 
 #   set of (non-standard) directories to search for libraries in.
 LDFLAGS = -L${PLL_HOME}/lib
+
 # LDLIBS is the list of libraries that your executable needs in order to link.
 LDLIBS = -lpll-sse3 -lm
 

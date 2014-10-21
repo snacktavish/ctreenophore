@@ -22,7 +22,10 @@ int main (int argc, char * argv[])
      fprintf (stderr, "Error while parsing newick file %s\n", argv[1]);
      return (EXIT_FAILURE);
    }
-   
-
+  else
+   {
+    fprintf (stderr, "Succesfully parsed newick file %s\n", argv[1]);
+   } 
+  
   return (EXIT_SUCCESS);
 }

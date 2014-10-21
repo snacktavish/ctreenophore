@@ -49,6 +49,4 @@ likelihood: likelihood.o
 mini: mini.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o mini
 
-clean:
-	rm -rf *.o likelihood mini
 

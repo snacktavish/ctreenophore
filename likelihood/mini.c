@@ -12,7 +12,6 @@ int main (int argc, char * argv[])
      fprintf (stderr, "usage: %s [newick-file]\n", argv[0]);
      return (EXIT_FAILURE);
    }
-
  
   /* Parse a NEWICK file */
   newick = pllNewickParseFile (argv[1]);
@@ -26,6 +25,13 @@ int main (int argc, char * argv[])
    {
     fprintf (stderr, "Succesfully parsed newick file %s\n", argv[1]);
    } 
-  
+
+  if (!pllValidateNewick (newick))
+   {          
+     fprintf (stderr, "Invalid phylogenetic tree\n");
+     printf ("%d\n", errno);
+     return (EXIT_FAILURE);
+   }  
+
   return (EXIT_SUCCESS);
 }

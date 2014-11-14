@@ -17,6 +17,8 @@ int main (int argc, char * argv[])
   attr.randomNumberSeed = 0xDEADBEEF;
   attr.numberOfThreads  = 8; 
 
+  tr = pllCreateInstance (&attr); 
+
   if (argc != 2)
    {
      fprintf (stderr, "usage: %s [newick-file]\n", argv[0]);
@@ -35,7 +37,9 @@ int main (int argc, char * argv[])
    {
     fprintf (stderr, "Succesfully parsed newick file %s\n", argv[1]);
    } 
+
   val=pllValidateNewick (newick);
+
   if (!pllValidateNewick (newick))
    {          
      fprintf (stderr, "Invalid phylogenetic tree\n");
@@ -45,5 +49,6 @@ int main (int argc, char * argv[])
   fprintf (stderr, "Alloo %i\n", val);
   return (EXIT_SUCCESS);
 
+  pllDestroyInstance (inst); 
 
 }

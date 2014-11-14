@@ -49,6 +49,12 @@ int main (int argc, char * argv[])
   fprintf (stderr, "Alloo %i\n", val);
   return (EXIT_SUCCESS);
 
-  pllDestroyInstance (inst); 
+  pllTreeInitTopologyNewick (tr, newick, PLL_TRUE);
+
+  rearrangeList = pllCreateRearrangeList (20);
+
+  
+
+  pllDestroyInstance (tr); 
 
 }

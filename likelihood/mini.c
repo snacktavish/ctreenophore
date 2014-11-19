@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <pll.h>
+#include <lexer.h>
 
 int main (int argc, char * argv[])
 {
@@ -51,9 +52,7 @@ int main (int argc, char * argv[])
 
   pllTreeInitTopologyNewick (tr, newick, PLL_TRUE);
 
-  rearrangeList = pllCreateRearrangeList (20);
-
-  
+  lex_table_amend_fasta ();
 
   pllDestroyInstance (tr); 
 

@@ -7,6 +7,7 @@
 int main (int argc, char * argv[])
 {
   pllNewickTree * newick;
+  pllNewickTree * t2;
   int val;
   pllInstance * tr;
   pllInstanceAttr attr;
@@ -48,12 +49,21 @@ int main (int argc, char * argv[])
      return (EXIT_FAILURE);
    }  
   fprintf (stderr, "Alloo %i\n", val);
-  return (EXIT_SUCCESS);
 
   pllTreeInitTopologyNewick (tr, newick, PLL_TRUE);
 
-  lex_table_amend_fasta ();
+/*  lex_table_amend_fasta ();*/
+  
+  const char * rawdata = "(a,b),(c,d)";
+
+  t2 = pllNewickParseString (rawdata);
+
+  val=pllValidateNewick (t2);
+  fprintf (stderr, "Alloo2 %i\n", val);
+  return (EXIT_SUCCESS);
 
   pllDestroyInstance (tr); 
+
+/*void testfunc(void)*/
 
 }

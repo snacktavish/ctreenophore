@@ -19,7 +19,7 @@ include_dir = /home/ejmctavish/projects/libpll-1.0.0/src
 CPPFLAGS := -I${PLL_HOME}/include/pll -I${PLL_HOME}/include -I$(include_dir)
 
 #  -g adds "symbols" to your executable, which makes it easier to debug.
-CFLAGS := -Wall -O2 -fomit-frame-pointer -g
+CFLAGS := -Wall -O0 -fomit-frame-pointer -g
 
 # LDFLAGS are flags to the linker... -L (capital matters!) is the 
 #   set of (non-standard) directories to search for libraries in.

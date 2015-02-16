@@ -1,6 +1,6 @@
 CC = gcc
 ARCH = sse3
-all: likelihood mini
+all: updating mini
 
 clean:
 	rm -rf *.o likelihood mini
@@ -43,8 +43,8 @@ LDLIBS = -lpll-$(ARCH) -lm
 #    nice because it lets you specify rules for the compilation of each
 #    piece into .o precisely, and then describe how to link those .o files
 #    into an executable
-likelihood: likelihood.o
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o likelihood
+updating: updating.o
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o updating
 
 mini: mini.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o mini

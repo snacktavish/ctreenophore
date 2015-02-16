@@ -48,9 +48,11 @@ int main (int argc, char * argv[])
      printf ("%d\n", errno);
      return (EXIT_FAILURE);
    }  
-  fprintf (stderr, "Alloo %i\n", val);
+  fprintf (stderr, "OK %i\n", val);
 
-  pllTreeInitTopologyNewick (tr, newick, PLL_TRUE);
+  tr->nameHash   = pllHashInit (10 * tr->mxtips);
+
+  pllTreeInitTopologyNewick (tr, newick, 1);
 
 /*  lex_table_amend_fasta ();*/
   

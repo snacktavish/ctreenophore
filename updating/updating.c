@@ -15,6 +15,12 @@ int main (int argc, char * argv[])
   double alpha = 0.75;
   double freqs[4] = { 0.25, 0.25, 0.25, 0.25 };
 
+if (argc != 4)
+   {
+     fprintf (stderr, "usage: %s [phylip-file] [newick-file] [partition-file]\n", argv[0]);
+     return (EXIT_FAILURE);
+   }
+
   /* set PLL instance attributes */
   attr.rateHetModel = PLL_GAMMA;
   attr.fastScaling  = PLL_FALSE;

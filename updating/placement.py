@@ -33,6 +33,8 @@ else:
     tree = open(tree_fpath)
 
 outfile="test_out"
-print(query_fpath)
+#print(query_fpath)
 subprocess.call(['pagan', '-q', query_fpath, '-a', align_fpath, '-t', tree_fpath, '-o', outfile])
 
+#print(" ".join(['raxmlHPC', '-f', 'v', '-s', '{}.fas'.format(outfile), '-t',  tree_fpath, '-m', 'GTRCAT', '-n', 'TEST']))
+subprocess.call(['raxmlHPC', '-f', 'v', '-s', '{}.fas'.format(outfile), '-t',  tree_fpath, '-m', 'GTRCAT', '-n', 'TEST'])

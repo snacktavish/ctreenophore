@@ -4,6 +4,14 @@
 #include <pll.h>
  
 /*usage for time being is with  $updating schirrm_query.phy schirrm_query.tre schirrm.model*/
+/*PLAN:
+Read in two or more trees. that differ only in palcement of query sequence.
+Create virtual root at query tip
+Calculate conditional likelihood vecotrs for nodes wich represent the same bipartitions
+Compare changes in CLV across the two trees as distance from MRCA of query placements increases.
+*/
+
+
 int main (int argc, char * argv[])
 {
   pllInstance * inst;

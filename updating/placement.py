@@ -7,10 +7,6 @@ import subprocess
 #inputs: Alignment, Tree, query sequence
 #outputs: New alignment including query seq, New tree with query seq in both EPA and starnderd format, EPA list of placement probabilities.
 
-#
-#mafft --auto schirrmeister2011_1220_clean.fas > schirrmeister2011_1220_clean
-#raxml -m GTRCAT -n schirrmeister2011_1220_clean -p 1 -s schirrmeister2011_1220_clean 
-#
 
 if ("--help" in sys.argv) or ("-?" in sys.argv):
     sys.stderr.write("usage: placement.py [<query-sequence>] [<alignment-file-path>] [<newick-file-path>]\n")

@@ -12,6 +12,7 @@ int main (int argc, char * argv[])
   pllNewickTree * newick;
   partitionList * partitions;
   pllQueue * partitionInfo;
+  nodeptr examplenode;
   double alpha = 0.75;
   double freqs[4] = { 0.25, 0.25, 0.25, 0.25 };
 
@@ -82,7 +83,6 @@ if (argc != 4)
      fprintf (stderr, "Incompatible tree/alignment combination\n");
      return (EXIT_FAILURE);
    }
- 
 
    /* Initialize the model. Note that this function will also perform a full
      tree traversal and evaluate the likelihood of the tree. Therefore, you
@@ -110,10 +110,27 @@ if (argc != 4)
             partitions->partitionData[0]->frequencies[2], 
             partitions->partitionData[0]->frequencies[3]);
     printf ("+-------------------------------------------------------+\n\n\n");
-    
 
+
+  
+  examplenode = inst->nodep[1];
+  size_t states = (size_t)partitions->partitionData[0]->states;
+  size_t width = (size_t) partitions->partitionData[0]->width;
+  size_t categories = 4;
+  printf("+-States is %lu-Width is %lu, categories is %lu---------+\n\n\n",
+    states, width, categories);
+  double * outProbs;
+  outProbs = malloc(width * categories * states * sizeof(double));
+  int partition = 0;
+
+  printf ("+-------------------------NEW------------------------------+\n\n\n");
+  pllGetCLV(inst, partitions, examplenode, partition, outProbs);
+  int i;
+  for (i=0;i < (sizeof (outProbs) /sizeof (outProbs[0]));i++) {
+    printf("%lf\n",outProbs[i]);
+  }
   /* Perform some changes to the model */
- 
+  printf ("+-------------------------NEW------------------------------+\n\n\n");
   printf ("Setting Alpha to %f\n", alpha);
   pllSetFixedAlpha(alpha, 0, partitions, inst);
   printf ("Setting frequencies to:\n  A -> %f\n  C -> %f\n  G -> %f\n  T -> %f\n", freqs[0], freqs[1], freqs[2], freqs[3]);
@@ -136,9 +153,17 @@ if (argc != 4)
           partitions->partitionData[0]->frequencies[3]);
   printf ("+-------------------------------------------------------+\n");
  
+printf ("+-------------------------NEW------------------------------+\n\n\n");
+  pllGetCLV(inst, partitions, examplenode, partition, outProbs);
+  int ii;
+  for (ii=0;ii < (sizeof (outProbs) /sizeof (outProbs[0]));ii++) {
+    printf("%lf\n",outProbs[ii]);
+  }
+
   /* free all allocated memory to eliminate memory leaks */
   pllPartitionsDestroy (inst, &partitions);
   pllDestroyInstance(inst);
+  free(outProbs);
  
   return (EXIT_SUCCESS);
 }

@@ -10,7 +10,7 @@ clean:
 #    build and a debugging build of a library.
 # The ?= syntax specifies the default if the var is not in the environment.
 PLL_HOME ?= /usr/local
-include_dir = /home/ejmctavish/projects/libpll-1.0.0/src
+include_dir = /home/ejmctavish/projects/Exelixis/libpll-1.0.0/src
 
 # CPPFLAGS are arguments to the C preprocessor - typically -D for defines
 #    and -I for includes.

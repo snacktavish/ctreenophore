@@ -1,5 +1,26 @@
 ##IDEA - mapping reads straight from SRA or other NGS files, to alignments and feeding them into the pipeline.
 
+##Notes from Ido Ebersberger
+## interrogate reads using hmmer or hmmerscan.
+## Then assemble like they are tiny genomes using tirnity or something else!
+
+## Shouldn't work for really distnt stuff:
+## then Blast? reads to different *profiles*? and assemble.
+## Need to think about what is appropriate at high divergence - translating reads to amino acids not scaleable.
+
+##BUT : once potenially correct, eveni f quite messy, reads are targeted, THEN you can build sequences like they are genomes. Which they are.
+
+#Option A
+#Use aTRAM to generate seqs from reads.
+for readarch in ${SRADIR}*.sra
+  do
+	a=$(basename $readarch); 
+	stub=${a%.*}; 
+	fastq-dump --split-files nam
+	sed -e 's/length=\([0-9]*\)$/length=\1\\1/' ${stub}_1.fastq > ${stub}c_1.fastq 
+	sed -e 's/length=\([0-9]*\)$/length=\1\\2/' ${stub}_2.fastq > ${stub}c_2.fastq 
+	cat ${stub}c_1.fastq ${stub}c_2.fastq > ${stub}.fastq
+  done
 
 ##Option 1 - pagan
 ##Is a logical option but is VERY slow

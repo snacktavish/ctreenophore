@@ -118,24 +118,24 @@ if (argc != 4)
   examplenode = inst->nodep[10];
   size_t states = (size_t)partitions->partitionData[0]->states;
   size_t width = (size_t) partitions->partitionData[0]->width;
-  size_t categories = 4;
+  size_t categories = 4;  /*I though t categories was gamma rate categories, but steting it to less than 4 causes a seq fault....*/
   printf("+-States is %lu-Width is %lu, categories is %lu,---numtips-is %i-------+\n\n\n",
     states, width, categories, inst->mxtips);
   double * outProbs;
   outProbs = malloc(width * categories * states * sizeof(double));
   int partition = 0;
 
-  printf ("+-------------------------NEW------------------------------+\n\n\n");
+  printf ("+---------------------CLV - but what?------------------------------+\n\n\n");
   pllGetCLV(inst, partitions, examplenode, partition, outProbs);
   int i;
-  for (i=0;i < 10;i++)
+ /for (i=0;i < 1;i++)
   {
     printf("%lf\n",outProbs[i]);
   }
   
 
   /* Perform some changes to the model */
-  printf ("+-------------------------NEW------------------------------+\n\n\n");
+  printf ("+---------------------------------------------------------+\n\n\n");
   printf ("Setting Alpha to %f\n", alpha);
   pllSetFixedAlpha(alpha, 0, partitions, inst);
   printf ("Setting frequencies to:\n  A -> %f\n  C -> %f\n  G -> %f\n  T -> %f\n", freqs[0], freqs[1], freqs[2], freqs[3]);
@@ -148,7 +148,7 @@ if (argc != 4)
   printf ("  log-likelihood..: %f\n", inst->likelihood);
   printf ("+-------------------------------------------------------+\n");
  
-printf ("+-------------------------NEW------------------------------+\n\n\n");
+printf ("+-----------------------CLV - but what?--------------------------+\n\n\n");
   pllGetCLV(inst, partitions, examplenode, partition, outProbs);
   int j;
   for (j=0;j < 10;j++)
@@ -156,7 +156,7 @@ printf ("+-------------------------NEW------------------------------+\n\n\n");
     printf("%lf\n",outProbs[j]);
   }
   
-printf ("+-------------------------NEW------------------------------+\n\n\n");
+printf ("+-----------------------------------------------------+\n\n\n");
 
   /* free all allocated memory to eliminate memory leaks */
   pllPartitionsDestroy (inst, &partitions);

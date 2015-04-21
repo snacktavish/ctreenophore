@@ -115,10 +115,10 @@ if (argc != 4)
 
 
   
-  examplenode = inst->nodep[10];
-  size_t states = (size_t)partitions->partitionData[0]->states;
-  size_t width = (size_t) partitions->partitionData[0]->width;
-  size_t categories = 4;  /*I though t categories was gamma rate categories, but steting it to less than 4 causes a seq fault....*/
+  examplenode = inst->nodep[1];
+  size_t states = (size_t) partitions->partitionData[0]->states;
+  size_t width = (size_t) partitions->partitionData[0]->width; 
+  size_t categories = 3;  /*I though t categories was gamma rate categories, but steting it to less than 4 causes a seq fault....*/
   printf("+-States is %lu-Width is %lu, categories is %lu,---numtips-is %i-------+\n\n\n",
     states, width, categories, inst->mxtips);
   double * outProbs;
@@ -128,7 +128,7 @@ if (argc != 4)
   printf ("+---------------------CLV - but what?------------------------------+\n\n\n");
   pllGetCLV(inst, partitions, examplenode, partition, outProbs);
   int i;
- /for (i=0;i < 1;i++)
+  for (i=0;i < 1;i++)
   {
     printf("%lf\n",outProbs[i]);
   }
@@ -142,16 +142,16 @@ if (argc != 4)
   pllSetFixedBaseFrequencies(freqs, 4, 0, partitions, inst);
 /* Evaluate again the likelihood */
  
-  pllEvaluateLikelihood (inst, partitions, inst->start, PLL_TRUE, PLL_FALSE);
+  pllEvaluateLikelihood (inst, partitions, examplenode, PLL_TRUE, PLL_FALSE);
  
   printf ("+-------------------------------------------------------+\n");
   printf ("  log-likelihood..: %f\n", inst->likelihood);
   printf ("+-------------------------------------------------------+\n");
  
 printf ("+-----------------------CLV - but what?--------------------------+\n\n\n");
-  pllGetCLV(inst, partitions, examplenode, partition, outProbs);
+  pllGetCLV(inst, partitions, inst->start, partition, outProbs);
   int j;
-  for (j=0;j < 10;j++)
+  for (j=0;j < 17;j++)
   {
     printf("%lf\n",outProbs[j]);
   }

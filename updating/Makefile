@@ -1,9 +1,9 @@
 CC = gcc
 ARCH = sse3
-all: updating mini
+all: updating
 
 clean:
-	rm -rf *.o likelihood mini
+	rm -rf *.o updating
 # Letting the user have PLL_HOME in a non-standard
 #    location is nice because some folks might want multiple installations 
 #    of PLL. I use this sort of thing a lot to have a fully optimization 
@@ -16,7 +16,7 @@ include_dir = /home/ejmctavish/projects/Exelixis/libpll-1.0.0/src
 #    and -I for includes.
 # The := appends, which is nice if you want to be able to tweak CFLAGS
 #    in your environment without touching the Makefile
-CPPFLAGS := -I${PLL_HOME}/include/pll -I${PLL_HOME}/include -I$(include_dir)
+CPPFLAGS :=-g -I${PLL_HOME}/include/pll -I${PLL_HOME}/include -I$(include_dir)
 
 #  -g adds "symbols" to your executable, which makes it easier to debug.
 CFLAGS := -Wall -O0 -fomit-frame-pointer -g

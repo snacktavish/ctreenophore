@@ -21,8 +21,7 @@ int main (int argc, char * argv[])
   pllNewickTree * newick;
   partitionList * partitions;
   pllQueue * partitionInfo;
-  nodeptr examplenode;
-  double alpha = 0.75;
+/*  double alpha = 0.75;*/
   double freqs[4] = { 0.25, 0.25, 0.25, 0.25 };
 
 if (argc != 4)
@@ -95,73 +94,62 @@ if (argc != 4)
      fprintf (stderr, "Incompatible tree/alignment combination\n");
      return (EXIT_FAILURE);
    }
-   pllLoadAlignment (inst2, alignmentData, partitions);
+  pllLoadAlignment (inst2, alignmentData, partitions);
    /* Initialize the model. Note that this function will also perform a full
      tree traversal and evaluate the likelihood of the tree. Therefore, you
      have the guarantee that tr->likelihood is the valid likelihood */
-    pllInitModel(inst, partitions);
-    pllInitModel(inst2, partitions);
-  /* we can actually free the parsed alignmentData, since they
-     are deep-copied in the instance. We can also free the
-     parsed tree as it is also copied to the instance */
-    pllAlignmentDataDestroy (alignmentData);
-    pllNewickParseDestroy (&newick);
-
-    printf ("Default settings with empirical frequencies\n"); 
-    
-    printf ("+-------------------------------------------------------+\n");
-    printf ("  log-likelihood..: %f\n", inst->likelihood);
-    printf ("+-------------------------------------------------------+\n\n\n");
-
-
+  pllInitModel(inst, partitions);
+  pllInitModel(inst2, partitions);
+ /* we can actually free the parsed alignmentData, since they
+   are deep-copied in the instance. We can also free the
+   parsed tree as it is also copied to the instance */
+  pllAlignmentDataDestroy (alignmentData);
+  pllNewickParseDestroy (&newick);
   
-  examplenode = inst->nodep[1];
+
+  printf ("Equal base frequencies\n"); 
+  printf ("Setting frequencies to:\n  A -> %f\n  C -> %f\n  G -> %f\n  T -> %f\n", freqs[0], freqs[1], freqs[2], freqs[3]);
+  pllSetFixedBaseFrequencies(freqs, 4, 0, partitions, inst);
+
+  printf ("+-------------------------------------------------------+\n");
+  printf ("  log-likelihood..: %f\n", inst->likelihood);
+  printf ("+-------------------------------------------------------+\n\n\n");
+
+  pllEvaluateLikelihood (inst, partitions, inst->start, PLL_TRUE, PLL_FALSE);
+
+  printf ("+-------------------------------------------------------+\n");
+  printf ("  log-likelihood..: %f\n", inst->likelihood);
+  printf ("+-------------------------------------------------------+\n");
   size_t states = (size_t) partitions->partitionData[0]->states;
   size_t width = (size_t) partitions->partitionData[0]->width; 
   size_t categories = 3;  /*I though t categories was gamma rate categories, but steting it to less than 4 causes a seq fault....*/
   printf("+-States is %lu-Width is %lu, categories is %lu,---numtips-is %i-------+\n\n\n",
-    states, width, categories, inst->mxtips);
+  states, width, categories, inst->mxtips);
+  int partition = 0;
   double * outProbs;
   outProbs = malloc(width * categories * states * sizeof(double));
-  int partition = 0;
-
-  printf ("+---------------------CLV - but what?------------------------------+\n\n\n");
-  pllGetCLV(inst, partitions, examplenode, partition, outProbs);
-  int i;
-  for (i=0;i < 1;i++)
-  {
-    printf("%lf\n",outProbs[i]);
-  }
   
+  int np;
+  for (np=1; np<7; np++)
+  {
+  printf ("+---------------------node by node : NODE %i------------------------------+\n\n\n", np);
+  pllEvaluateLikelihood (inst, partitions, inst->nodep[np], PLL_TRUE, PLL_FALSE);
 
-  /* Perform some changes to the model */
-  printf ("+---------------------------------------------------------+\n\n\n");
-  printf ("Setting Alpha to %f\n", alpha);
-  pllSetFixedAlpha(alpha, 0, partitions, inst);
-  printf ("Setting frequencies to:\n  A -> %f\n  C -> %f\n  G -> %f\n  T -> %f\n", freqs[0], freqs[1], freqs[2], freqs[3]);
-  pllSetFixedBaseFrequencies(freqs, 4, 0, partitions, inst);
-/* Evaluate again the likelihood */
- 
-  pllEvaluateLikelihood (inst, partitions, examplenode, PLL_TRUE, PLL_FALSE);
- 
   printf ("+-------------------------------------------------------+\n");
   printf ("  log-likelihood..: %f\n", inst->likelihood);
-  printf ("+-------------------------------------------------------+\n");
- 
-printf ("+-----------------------CLV - but what?--------------------------+\n\n\n");
-  pllGetCLV(inst, partitions, inst->start, partition, outProbs);
+  pllGetCLV(inst, partitions, inst->nodep[np], partition, outProbs);
   int j;
   for (j=0;j < 17;j++)
   {
     printf("%lf\n",outProbs[j]);
   }
-  
-printf ("+-----------------------------------------------------+\n\n\n");
 
+  printf ("+-----------------------------------------------------+\n\n\n");
+  }
   /* free all allocated memory to eliminate memory leaks */
   pllPartitionsDestroy (inst, &partitions);
   pllDestroyInstance(inst);
   free(outProbs);
- 
+
   return (EXIT_SUCCESS);
 }

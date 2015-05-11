@@ -1,6 +1,6 @@
-5 5
-taxA                                                                  ATGCT
-taxB                                                                  ATGCA
-taxC                                                                  ATGCA
-taxD                                                                  ATGCA
-taxE                                                                  ATGCA
+5 36
+taxA                                                                  AAATGCTATGCTATGCTCCATGCTATGCTATGCTCC
+taxB                                                                  AAATGCAGCTAGCTAGCTAATGCTATGCTATGCTCC
+taxC                                                                  AAATGCAAGCTAGCTAGCTATGCTATGCTATGCTCC
+taxD                                                                  AAATGCACGCTAGCTAATGATGCTATGCTATGCTCC
+taxE                                                                  AAATGCACGCTAGCTAATAATGCTATGCTATGCTCC

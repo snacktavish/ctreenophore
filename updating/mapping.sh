@@ -54,6 +54,7 @@ for readarch in ${SRADIR}*.sra
 #for item in `cat matches`; do grep -A 1 "$item " allreads.fas >> matched_reads; done
 #pagan --ref-seqfile schirrmeister2011_1220_clean.aln -t RAxML_bestTree.schirrmeister2011_1220_clean --queryfile matched_reads --outfile read_alignment
 
+
 ##Option 5. 
 ##Might be best, but is a bit slow, and doesn't grab the distant stuff? Does output alignment tho
 #hmmbuild --dna -n schirrmhmm schirrmeister2011_1220_clean.aln 
@@ -64,3 +65,72 @@ for readarch in ${SRADIR}*.sra
 #./stampy.py -G hg18 ../ctreenophore/updating/sequence.fasta
 #./stampy.py -g hg18 -H hg18
 #./stampy.py -g hg18 -h hg18 -M ../ctreenophore/updating/matched_reads_1.fq  ../ctreenophore/updating/matched_reads_2.fq
+
+
+#more on hmmalign:
+#hmmsearch --tblout testsearch.out ../../ctreenophore/updating/schirrmhmm SRR610375.fasta > tbl.tes
+#grep -e "     SRR6" tbl.test | tr -s ' ' | cut -d ' ' -f2 >matches
+'''
+small python prog:
+
+
+matchset=set()
+matches=open("matches")
+for lin in matches:
+	matchset.add(lin.strip())
+
+
+matchout=open('matchout.fasta','w')
+
+fi=open("../../fasta/SRR610375.fasta")
+i=0
+for lin in fi:
+  i+=1
+  if i%2==1:
+  	lihead=lin
+  else:
+    if lihead.split()[0][1:] in matchset:
+        matchout.write(lihead)
+        matchout.write(lin)
+
+matchout.close()
+  
+
+
+ 2108  head test.fasta 
+ 2109  grep -e "     SRR6" tbl.test | tr -s ' ' | cut -d ' ' -f2 >matches
+ 2110  ls
+ 2111  head matches 
+ 2112  grep -e "     SRR6" tbl.test | tr -s ' ' | cut -d ' ' -f2 | uniq > matches
+ 2113  head test.fasta 
+ 2114  python
+ 2115  hmmalign --dna --mapali ../../ctreenophore/updating/schirrmeister2011_1220_clean.aln  ../../ctreenophore/updating/schirrmhmm matchout.fasta > searchout.aln
+ 2116  seaview searchout.aln 
+ 2117  sudo apt-get install minia
+ 2118  ./minia -in matchout.fasta -kmer-size 31 -abundance-min 3 -out output_minia
+ 2119  minia -in matchout.fasta -kmer-size 31 -abundance-min 3 -out output_minia
+ 2120  vi matchout.fasta 
+ 2121  minia -in test.fasta -kmer-size 31 -abundance-min 3 -out output_minia
+ 2122  minia -in test.fasta -kmer-size 3 -abundance-min 3 -out output_minia
+ 2123  minia iin test.fasta
+ 2124  minia test.fasta 31 1000 testmin
+ 2125  minia test.fasta 31 3 1000 testmin
+ 2126  cat matchout.fasta ../alttest/ref_genes.fa > goosed.fa
+ 2127  minia goosed.fasta 31 3 1000 testmin
+ 2128  minia matchout.fasta 31 3 1000 testmin
+ 2129  ls -ltr
+ 2130  vi testmin.contigs.fa 
+ 2131  perl ./stockholm2fasta.pl 
+ 2132  perl ./stockholm2fasta.pl testsearch.out 
+ 2133  ls -ltr
+ 2134  perl ./stockholm2fasta.pl searchout.aln > searchout.fasta
+ 2135  seaview searchout.fasta 
+ 2136  history
+'''
+
+
+bowtie2 -p "${PROCESSORS}" -N 1 --local -x "${MAINFOLDER}"/ref_genes -1 ${FILE} -2 $( echo ${FILE}|sed 's/R1/R2/' ) > >(tee ${FILE/.fastq/}_stdout.log) 2> >(tee ${FILE/.fastq/}_stderr.log >&2) | samtools view -Su -F 4 - | samtools sort - "$FOLDER"_loci/$(basename ${FILE/.fastq})  
+
+
+bowtie2 -x full_aln/ref_genes -1 full_aln/datafiles/SRR610374_R1.fastq -2 full_aln/datafiles/SRR610374_R2.fastq -S tes_full.sam
+samtools mpileup -uf REFERENCE.FA QUERY.BAM | bcftools view -cg - | vcfutils.pl vcf2fq > OUTPUT.FASTQ

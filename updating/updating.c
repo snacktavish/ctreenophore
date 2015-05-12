@@ -10,7 +10,7 @@ Create virtual root at query tip
 Calculate conditional likelihood vecotrs for nodes wich represent the same bipartitions
 Compare changes in CLV across the two trees as distance from MRCA of query placements increases.
 */
-
+int tip(pllInstance *inst);
 
 int main (int argc, char * argv[])
 {
@@ -122,34 +122,94 @@ if (argc != 4)
   printf ("+-------------------------------------------------------+\n");
   size_t states = (size_t) partitions->partitionData[0]->states;
   size_t width = (size_t) partitions->partitionData[0]->width; 
-  size_t categories = 3;  /*I though t categories was gamma rate categories, but steting it to less than 4 causes a seq fault....*/
+  size_t categories = 4;  /*I though t categories was gamma rate categories, but steting it to less than 4 causes a seq fault....*/
   printf("+-States is %lu-Width is %lu, categories is %lu,---numtips-is %i-------+\n\n\n",
   states, width, categories, inst->mxtips);
   int partition = 0;
   double * outProbs;
-  outProbs = malloc(width * categories * states * sizeof(double));
   
+  outProbs = malloc(width * categories * states * sizeof(double));
+  int numvals = 1;
   int np;
-  for (np=1; np<7; np++)
+  for (np=6; np<7; np++)
   {
-  printf ("+---------------------node by node : NODE %i------------------------------+\n\n\n", np);
-  pllEvaluateLikelihood (inst, partitions, inst->nodep[np], PLL_TRUE, PLL_FALSE);
+      printf ("+---------------------node by node : NODE %i-, %i-----------------------------+\n\n\n", np, inst->nodep[np]->number);
+      pllEvaluateLikelihood (inst, partitions, inst->start, PLL_TRUE, PLL_FALSE);
 
-  printf ("+-------------------------------------------------------+\n");
-  printf ("  log-likelihood..: %f\n", inst->likelihood);
-  pllGetCLV(inst, partitions, inst->nodep[np], partition, outProbs);
-  int j;
-  for (j=0;j < 17;j++)
-  {
-    printf("%lf\n",outProbs[j]);
+      printf ("+-------------------------------------------------------+\n");
+      printf ("  log-likelihood..: %f\n", inst->likelihood);
+      pllGetCLV(inst, partitions, inst->nodep[np], partition, outProbs);
+      int j;
+      for (j=0;j < numvals;j++)
+          {
+            printf("%lf\n",outProbs[j]);
+          }
+      pllEvaluateLikelihood (inst, partitions, inst->nodep[2], PLL_TRUE, PLL_FALSE);
+      printf ("+----------------Root at tip 2-------------------------------------+\n");
+      printf ("  log-likelihood..: %f\n", inst->likelihood);
+      pllGetCLV(inst, partitions, inst->nodep[np], partition, outProbs);
+      for (j=0;j < numvals;j++)
+          {
+            printf("%lf\n",outProbs[j]);
+          }
+
+      printf ("+----------------Root at tip 3----------------------------------+\n");
+      pllEvaluateLikelihood (inst, partitions, inst->nodep[3], PLL_TRUE, PLL_FALSE);
+      printf ("  log-likelihood..: %f\n", inst->likelihood);
+      pllGetCLV(inst, partitions, inst->nodep[np]->next, partition, outProbs);
+      for (j=0;j < numvals;j++)
+          {
+            printf("%lf\n",outProbs[j]);
+          }
+
+      printf ("+-----------------------------------------------------+\n\n\n");
   }
 
-  printf ("+-----------------------------------------------------+\n\n\n");
-  }
+/*Find bipart for node*/
+
+    printf ("+----------------Find biparts for node %i----------------------------\n", np);
+    int z= tip(inst);   
+
+   printf("\nAnswer is %i\n",z);
+
   /* free all allocated memory to eliminate memory leaks */
   pllPartitionsDestroy (inst, &partitions);
   pllDestroyInstance(inst);
   free(outProbs);
 
   return (EXIT_SUCCESS);
+}
+
+/* function returning all tips on one side of a root at a node */
+int tip(pllInstance *inst) 
+{ 
+
+    nodeptr node1=inst->nodep[6];
+    nodeptr node2=node1->next;
+    nodeptr node3=node2->next;
+    if ( node1->x == 1 ){
+          printf( "XFLAG" );
+    } else {
+            if (node1->back->number < inst->mxtips) 
+              return node1->back->number < inst->mxtips;
+    }
+    if ( node2->x == 1 ){
+          printf( "XFLAG 2nd try" );
+    } else {
+            if (node2->back->number < inst->mxtips) 
+              return node2->back->number < inst->mxtips;
+    }
+    if ( node3->x == 1 ){
+        printf( "XFLAG 3nd try" );
+        } else {
+            if (node3->back->number < inst->mxtips) 
+              return node3->back->number < inst->mxtips;
+    }
+    
+
+      printf("\n%i\n",node1->number);
+      printf("\n%i\n",inst->mxtips);
+
+      printf ("+-----------------------------------------------------+\n\n\n");
+  return 0;
 }

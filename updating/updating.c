@@ -171,7 +171,7 @@ if (argc != 4)
 /*Find bipart for node*/
 
     printf ("+----------------Find biparts for node %i----------------------------\n", np);
-    traverse(inst, inst->nodep[3]);   
+    traverse(inst, inst->nodep[6]);   
 
 
   /* free all allocated memory to eliminate memory leaks */
@@ -182,6 +182,7 @@ if (argc != 4)
   return (EXIT_SUCCESS);
 }
 
+/*from Thomas*/
 char ** traverse_recursive(pllInstance * tr, 
                            nodeptr p, 
                            int * tip_count)
@@ -197,7 +198,6 @@ char ** traverse_recursive(pllInstance * tr,
   /* tip list for current inner node, which will be formed as the concatenation
      of left and right subtree tiplists */
   char ** tiplist;
-
   /* if it's a tip, create a list of size 1, add a pointer to its label, 
      set tip_count to 1 and return */
   if (isTip(p->number, tr->mxtips)) 
@@ -205,6 +205,7 @@ char ** traverse_recursive(pllInstance * tr,
     tiplist = (char **)malloc(sizeof(char *));
     *tiplist = tr->tipNames[p->number];
     *tip_count = 1;
+    printf("Tip %s \n",tr->tipNames[p->number]);
     return tiplist;
   }
 
@@ -224,7 +225,8 @@ char ** traverse_recursive(pllInstance * tr,
   free(ltips);
   free(rtips);
 
-  printf ("mRCA of %i: \n", p->number);
+  printf("Node %i \n",p->number);
+  printf ("mRCA of: \n");
   for (i = 0; i < *tip_count; ++i)
     printf("%s ", tiplist[i]);
   printf("\n");
@@ -240,16 +242,22 @@ void traverse(pllInstance * tr, nodeptr p)
 {
   int tip_count = 0;
   char ** tiplist = NULL;
-
+  printf("Traversal starting from node %i \n",p->number);
   /* traverse first direction */
+  printf ("first direction\n");
+  if ( p->x == 1 )  printf("towards root\n");
   tiplist = traverse_recursive(tr, p->back, &tip_count);
   free(tiplist);
 
   /* reset number of tip labels in list and traverse second direction */
+  printf ("second direction\n");
+  if ( p->next->x == 1 )  printf("towards root\n");
   tiplist = traverse_recursive(tr, p->next->back, &tip_count);
   free(tiplist);
 
   /* reset number of tip labels in list and traverse third direction */
+  printf ("third direction \n");
+  if ( p->next->next->x == 1 )  printf("towards root\n");
   traverse_recursive(tr, p->next->next->back, &tip_count);
   free(tiplist);
 }

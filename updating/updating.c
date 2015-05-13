@@ -10,7 +10,10 @@ Create virtual root at query tip
 Calculate conditional likelihood vecotrs for nodes wich represent the same bipartitions
 Compare changes in CLV across the two trees as distance from MRCA of query placements increases.
 */
-int tip(pllInstance *inst);
+void traverse(pllInstance * tr, nodeptr p);
+char ** traverse_recursive(pllInstance * tr, 
+                           nodeptr p, 
+                           int * tip_count);
 
 int main (int argc, char * argv[])
 {
@@ -168,9 +171,8 @@ if (argc != 4)
 /*Find bipart for node*/
 
     printf ("+----------------Find biparts for node %i----------------------------\n", np);
-    int z= tip(inst);   
+    traverse(inst, inst->nodep[3]);   
 
-   printf("\nAnswer is %i\n",z);
 
   /* free all allocated memory to eliminate memory leaks */
   pllPartitionsDestroy (inst, &partitions);
@@ -180,8 +182,80 @@ if (argc != 4)
   return (EXIT_SUCCESS);
 }
 
+char ** traverse_recursive(pllInstance * tr, 
+                           nodeptr p, 
+                           int * tip_count)
+{
+  int i;
+
+  /* lists (and counts) of tip names for left and right subtree */
+  char ** ltips;
+  char ** rtips;
+  int ltip_count = 0;
+  int rtip_count = 0;
+
+  /* tip list for current inner node, which will be formed as the concatenation
+     of left and right subtree tiplists */
+  char ** tiplist;
+
+  /* if it's a tip, create a list of size 1, add a pointer to its label, 
+     set tip_count to 1 and return */
+  if (isTip(p->number, tr->mxtips)) 
+  {
+    tiplist = (char **)malloc(sizeof(char *));
+    *tiplist = tr->tipNames[p->number];
+    *tip_count = 1;
+    return tiplist;
+  }
+
+  /* if it's an inner node, recursively go over its two subtrees */
+  ltips = traverse_recursive(tr, p->next->back, &ltip_count);
+  rtips = traverse_recursive(tr, p->next->next->back, &rtip_count);
+
+  /* unify the two tip lists into one  */
+  tiplist = (char **)malloc((ltip_count+rtip_count) * sizeof(char *));
+  for (i = 0; i < ltip_count; ++i)
+    tiplist[i] = ltips[i];
+  for (i = ltip_count; i < ltip_count+rtip_count; ++i)
+    tiplist[i] = rtips[i-ltip_count];
+  *tip_count = ltip_count + rtip_count;
+
+  /* free the two lists as we will not need them any more */
+  free(ltips);
+  free(rtips);
+
+  printf ("mRCA of %i: \n", p->number);
+  for (i = 0; i < *tip_count; ++i)
+    printf("%s ", tiplist[i]);
+  printf("\n");
+
+  /* partially evaluate the likelihood here, for node p, don't remember the
+     function name/arguments and output the CLV */
+
+  return tiplist;
+}
+
+/* start of recursive traversal, make sure p is an inner node */
+void traverse(pllInstance * tr, nodeptr p)
+{
+  int tip_count = 0;
+  char ** tiplist = NULL;
+
+  /* traverse first direction */
+  tiplist = traverse_recursive(tr, p->back, &tip_count);
+  free(tiplist);
+
+  /* reset number of tip labels in list and traverse second direction */
+  tiplist = traverse_recursive(tr, p->next->back, &tip_count);
+  free(tiplist);
+
+  /* reset number of tip labels in list and traverse third direction */
+  traverse_recursive(tr, p->next->next->back, &tip_count);
+  free(tiplist);
+}
+
 /* function returning all tips on one side of a root at a node */
-int tip(pllInstance *inst) 
+/*int tip(pllInstance *inst) 
 { 
 
     nodeptr node1=inst->nodep[6];
@@ -213,3 +287,4 @@ int tip(pllInstance *inst)
       printf ("+-----------------------------------------------------+\n\n\n");
   return 0;
 }
+*/
